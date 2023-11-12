@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14.7)
 project(uikit)
 
 if(POLICY CMP0135)
-  cmake_policy(SET CMP0135)
+  cmake_policy(SET CMP0135 NEW)
 endif()
 
 include(FetchContent)
@@ -51,7 +51,7 @@ if(NOT NO_IMGUI)
       "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h"
       "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp")
     target_include_directories(imgui_glfw PUBLIC "${imgui_SOURCE_DIR}/backends")
-    target_link_libraries(imgui_glfw PUBLIC imgui)
+    target_link_libraries(imgui_glfw PUBLIC imgui glfw)
     target_compile_definitions(imgui_glfw PUBLIC GLFW_INCLUDE_NONE=1)
   endif()
 
