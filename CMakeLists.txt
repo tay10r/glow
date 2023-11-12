@@ -34,17 +34,30 @@ if(NOT NO_SHADER_COMPILER)
 endif()
 
 if(NOT NO_IMGUI)
+
   FetchContent_Declare(imgui URL "https://github.com/ocornut/imgui/archive/refs/tags/v1.89.9-docking.zip")
   FetchContent_MakeAvailable(imgui)
   FetchContent_GetProperties(imgui)
+
+  set(extra_sources)
+  set(extra_include_dirs)
+
+  if(NOT NO_IMGUI_STDLIB)
+    list(APPEND extra_sources
+      "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h"
+      "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp")
+    list(APPEND extra_include_dirs
+      "${imgui_SOURCE_DIR}/misc/cpp")
+  endif()
 
   add_library(imgui
     "${imgui_SOURCE_DIR}/imgui.cpp"
     "${imgui_SOURCE_DIR}/imgui_tables.cpp"
     "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
-    "${imgui_SOURCE_DIR}/imgui_draw.cpp")
+    "${imgui_SOURCE_DIR}/imgui_draw.cpp"
+    ${extra_sources})
 
-  target_include_directories(imgui PUBLIC "${imgui_SOURCE_DIR}")
+  target_include_directories(imgui PUBLIC "${imgui_SOURCE_DIR}" ${extra_include_dirs})
 
   if(NOT NO_IMGUI_GLFW)
     add_library(imgui_glfw
