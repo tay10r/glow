@@ -31,7 +31,7 @@ public:
 
 namespace uikit {
 
-auto create_app() -> std::unique_ptr<app> { return new app_impl(); }
+auto create_app() -> std::unique_ptr<app> { return std::unique_ptr<uikit::app>(new app_impl()); }
 
 } // namespace uikit
 
