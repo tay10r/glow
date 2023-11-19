@@ -1,8 +1,8 @@
-#include "shader_compiler.hpp"
+#include <uikit/shader_compiler.hpp>
 
 #include <cstring>
 
-namespace SHADER_COMPILER_NAMESPACE {
+namespace uikit {
 
 shader_compile_error::shader_compile_error(const std::string& what, const std::string& source)
   : shader_error(what)
@@ -111,4 +111,4 @@ compile_shader(const char* vert_source, const char* frag_source)
   throw shader_link_error(log);
 }
 
-} // namespace SHADER_COMPILER_NAMESPACE
+} // namespace uikit

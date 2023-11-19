@@ -5,11 +5,7 @@
 #include <stdexcept>
 #include <string>
 
-#ifndef SHADER_COMPILER_NAMESPACE
-#define SHADER_COMPILER_NAMESPACE uikit
-#endif
-
-namespace SHADER_COMPILER_NAMESPACE {
+namespace uikit {
 
 class shader_error : public std::runtime_error
 {
@@ -46,4 +42,4 @@ public:
 GLuint
 compile_shader(const char* vert_source, const char* frag_source);
 
-} // namespace SHADER_COMPILER_NAMESPACE
+} // namespace uikit
