@@ -4,34 +4,38 @@
 
 #include <implot.h>
 
+namespace {
+
+class app_impl final : public uikit::app
+{
+public:
+  void setup(uikit::platform& plt) override { plt.set_app_name("uikit_demo_app"); }
+
+  void teardown() override {}
+
+  void loop() override
+  {
+    ImGui::Begin("Window");
+
+    if (ImPlot::BeginPlot("Example Plot")) {
+
+      ImPlot::EndPlot();
+    }
+
+    ImGui::Button("Test");
+
+    ImGui::End();
+  }
+};
+
+} // namespace
+
 namespace uikit {
 
-void*
-setup(int, char**)
+auto
+app::create() -> std::unique_ptr<app>
 {
-  set_app_name("uikit_demo_app");
-
-  return nullptr;
-}
-
-void
-teardown(void*)
-{
-}
-
-void
-loop(void*)
-{
-  ImGui::Begin("Window");
-
-  if (ImPlot::BeginPlot("Example Plot")) {
-
-    ImPlot::EndPlot();
-  }
-
-  ImGui::Button("Test");
-
-  ImGui::End();
+  return std::unique_ptr<app>(new app_impl());
 }
 
 } // namespace uikit

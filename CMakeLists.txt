@@ -42,7 +42,7 @@ endif()
 
 if(NOT NO_IMGUI)
 
-  FetchContent_Declare(imgui URL "${imgui_URL}")
+  FetchContent_Declare(imgui URL "${imgui_url}")
   FetchContent_MakeAvailable(imgui)
   FetchContent_GetProperties(imgui)
 

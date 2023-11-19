@@ -38,10 +38,6 @@ die(const char* msg)
 
 std::string app_name;
 
-} // namespace
-
-namespace uikit {
-
 void
 make_directory(const char* name)
 {
@@ -50,12 +46,6 @@ make_directory(const char* name)
 #else
   CreateDirectory(name, nullptr);
 #endif
-}
-
-void
-set_app_name(const char* name)
-{
-  app_name = name;
 }
 
 std::string
@@ -68,6 +58,18 @@ get_app_data_path()
   return sago::getDataHome() + "/" + app_name;
 }
 
+class platform_impl final : public uikit::platform
+{
+public:
+  void set_app_name(const char* name) override { app_name = name; }
+
+  auto get_app_data_path() const -> std::string override { return ::get_app_data_path(); }
+};
+
+} // namespace
+
+namespace uikit {
+
 } // namespace uikit
 
 #ifdef _WIN32
@@ -79,11 +81,15 @@ int
 main(int argc, char** argv)
 {
 #endif
-  auto* app = uikit::setup(argc, argv);
+  auto app = uikit::app::create();
 
-  const auto data_path = uikit::get_app_data_path();
+  platform_impl plt;
 
-  uikit::make_directory(data_path.c_str());
+  app->setup(plt);
+
+  const auto data_path = ::get_app_data_path();
+
+  ::make_directory(data_path.c_str());
 
   const auto ui_path = data_path + "/ui.ini";
 
@@ -127,7 +133,7 @@ main(int argc, char** argv)
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   auto& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-  io.IniFilename = data_path.c_str();
+  io.IniFilename = ui_path.c_str();
   auto& style = ImGui::GetStyle();
   style.WindowBorderSize = 0;
   style.WindowRounding = 2;
@@ -162,7 +168,7 @@ main(int argc, char** argv)
     glViewport(0, 0, fb_w, fb_h);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    uikit::loop(app);
+    app->loop();
 
     ImGui::Render();
 
@@ -171,7 +177,9 @@ main(int argc, char** argv)
     glfwSwapBuffers(window);
   }
 
-  uikit::teardown(app);
+  app->teardown();
+
+  app.reset();
 
   ImPlot::DestroyContext(plot_context);
 
