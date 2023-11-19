@@ -26,4 +26,13 @@ public:
     ImGui::End();
   }
 };
+
+} // namespace
+
+namespace uikit {
+
+auto create_app() -> std::unique_ptr<app> { return new app_impl(); }
+
+} // namespace uikit
+
 ```
