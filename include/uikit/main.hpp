@@ -3,6 +3,8 @@
 #include <memory>
 #include <string>
 
+#include <imgui.h>
+
 namespace uikit {
 
 class platform
@@ -24,6 +26,22 @@ public:
   /// @note If @ref set_app_name is not called before this function, the data path will default to the current
   /// directory.
   virtual auto get_app_data_path() const -> std::string = 0;
+
+  /// @brief Gets the current scale factor.
+  virtual auto get_scale() const -> float = 0;
+
+  /// @brief Sets the current scale factor.
+  ///
+  /// @note This is not a cheap function call, since it requires rebuilding the font atlas.
+  virtual void set_scale(float scale) = 0;
+
+  virtual auto get_regular_font() -> ImFont* = 0;
+
+  virtual auto get_italic_font() -> ImFont* = 0;
+
+  virtual auto get_bold_font() -> ImFont* = 0;
+
+  virtual auto get_bold_italic_font() -> ImFont* = 0;
 };
 
 class app
@@ -38,8 +56,6 @@ public:
   virtual void setup(platform&) = 0;
 
   /// @brief Called when the application is exiting, to clean up resources.
-  ///
-  /// @param app_data The pointer that was returned by @ref setup.
   virtual void teardown() = 0;
 
   /// @brief Called when a frame is to be rendered.

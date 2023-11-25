@@ -10,7 +10,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include <uikit/imgui_fonts.hpp>
+#include <uikit/fonts.hpp>
 
 #include <iostream>
 #include <string>
@@ -36,34 +36,76 @@ die(const char* msg)
   std::abort();
 }
 
-std::string app_name;
-
-void
-make_directory(const char* name)
-{
-#ifdef __linux__
-  mkdir(name, 0755);
-#else
-  CreateDirectory(name, nullptr);
-#endif
-}
-
-std::string
-get_app_data_path()
-{
-  if (app_name.empty()) {
-    return ".";
-  }
-
-  return sago::getDataHome() + "/" + app_name;
-}
-
 class platform_impl final : public uikit::platform
 {
 public:
-  void set_app_name(const char* name) override { app_name = name; }
+  void build_fonts()
+  {
+    const float font_size{ 16 * m_scale };
 
-  auto get_app_data_path() const -> std::string override { return ::get_app_data_path(); }
+    m_regular_font = uikit::open_font("JetBrainsMonoNL-Regular.ttf", font_size);
+
+    m_italic_font = uikit::open_font("JetBrainsMonoNL-Italic.ttf", font_size);
+
+    m_bold_font = uikit::open_font("JetBrainsMonoNL-Bold.ttf", font_size);
+
+    m_bold_italic_font = uikit::open_font("JetBrainsMonoNL-BoldItalic.ttf", font_size);
+
+    ImGui::GetIO().Fonts->Build();
+  }
+
+  auto get_regular_font() -> ImFont* override { return m_regular_font; }
+
+  auto get_italic_font() -> ImFont* override { return m_italic_font; }
+
+  auto get_bold_font() -> ImFont* override { return m_bold_font; }
+
+  auto get_bold_italic_font() -> ImFont* override { return m_bold_italic_font; }
+
+  auto get_app_name() const -> const char* { return m_app_name.c_str(); }
+
+  void set_app_name(const char* name) override { m_app_name = name; }
+
+  auto get_app_data_path() const -> std::string override
+  {
+    if (m_app_name.empty()) {
+      return ".";
+    }
+
+    return sago::getDataHome() + "/" + m_app_name;
+  }
+
+  void make_data_directory()
+  {
+#ifdef __linux__
+    mkdir(get_app_data_path().c_str(), 0755);
+#else
+    CreateDirectory(get_app_data_path().c_str(), nullptr);
+#endif
+  }
+
+  float get_scale() const override { return m_scale; }
+
+  void set_scale(float scale) override
+  {
+    m_scale = scale;
+    m_scale_changed = true;
+  }
+
+private:
+  std::string m_app_name;
+
+  float m_scale{ 1 };
+
+  bool m_scale_changed{ false };
+
+  ImFont* m_regular_font{ nullptr };
+
+  ImFont* m_italic_font{ nullptr };
+
+  ImFont* m_bold_font{ nullptr };
+
+  ImFont* m_bold_italic_font{ nullptr };
 };
 
 } // namespace
@@ -81,18 +123,6 @@ int
 main(int argc, char** argv)
 {
 #endif
-  auto app = uikit::app::create();
-
-  platform_impl plt;
-
-  app->setup(plt);
-
-  const auto data_path = ::get_app_data_path();
-
-  ::make_directory(data_path.c_str());
-
-  const auto ui_path = data_path + "/ui.ini";
-
   if (glfwInit() != GLFW_TRUE) {
     die("Failed to initialize GLFW.");
     return EXIT_FAILURE;
@@ -115,7 +145,7 @@ main(int argc, char** argv)
   glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
 
-  GLFWwindow* window = glfwCreateWindow(w, h, app_name.c_str(), nullptr, nullptr);
+  GLFWwindow* window = glfwCreateWindow(w, h, "", nullptr, nullptr);
   if (!window) {
     die("Failed to create a window.");
     return EXIT_FAILURE;
@@ -125,6 +155,8 @@ main(int argc, char** argv)
 
   gladLoadGLES2Loader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 
+  platform_impl plt;
+
   glClearColor(0, 0, 0, 1);
 
   IMGUI_CHECKVERSION();
@@ -133,17 +165,26 @@ main(int argc, char** argv)
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   auto& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-  io.IniFilename = ui_path.c_str();
   auto& style = ImGui::GetStyle();
   style.WindowBorderSize = 0;
   style.WindowRounding = 2;
   style.FrameRounding = 2;
 
-  uikit::open_font("fonts/Roboto-Medium.ttf", 16.0f);
-
-  io.Fonts->Build();
-
   auto* plot_context = ImPlot::CreateContext();
+
+  plt.build_fonts();
+
+  auto app = uikit::app::create();
+
+  app->setup(plt);
+
+  glfwSetWindowTitle(window, plt.get_app_name());
+
+  plt.make_data_directory();
+
+  const auto ui_path = plt.get_app_data_path() + "/ui.ini";
+
+  io.IniFilename = ui_path.c_str();
 
   while (!glfwWindowShouldClose(window)) {
 

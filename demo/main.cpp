@@ -1,4 +1,5 @@
 #include <uikit/main.hpp>
+#include <uikit/viewport.hpp>
 
 #include <imgui.h>
 
@@ -26,6 +27,9 @@ public:
 
     ImGui::End();
   }
+
+private:
+  std::unique_ptr<uikit::viewport> m_viewport;
 };
 
 } // namespace

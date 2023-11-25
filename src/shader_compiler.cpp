@@ -89,7 +89,7 @@ compile_shader(const char* vert_source, const char* frag_source)
   glGetProgramiv(id, GL_LINK_STATUS, &link_status);
 
   if (link_status == GL_TRUE) {
-    return link_status;
+    return id;
   }
 
   GLint log_length{ 0 };

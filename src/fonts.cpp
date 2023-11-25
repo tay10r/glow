@@ -1,18 +1,18 @@
-#include <uikit/imgui_fonts.hpp>
+#include <uikit/fonts.hpp>
 
 #include <cmrc/cmrc.hpp>
 
 #include <cstdlib>
 #include <cstring>
 
-CMRC_DECLARE(imgui_fonts_data);
+CMRC_DECLARE(uikit_font_data);
 
 namespace uikit {
 
 ImFont*
 open_font(const char* resource_path, float font_size, const ImFontConfig* config, const ImWchar* glyph_ranges)
 {
-  const auto fs = cmrc::imgui_fonts_data::get_filesystem();
+  const auto fs = cmrc::uikit_font_data::get_filesystem();
 
   const auto file = fs.open(resource_path);
 
