@@ -1,15 +1,12 @@
 #include <uikit/main.hpp>
 
-#include <emscripten.h>
-
-#include <SDL.h>
-#include <SDL_opengl.h>
+#include <GLES2/gl2.h>
 
 #include <implot.h>
 
 #include <imgui.h>
+#include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <imgui_impl_sdl2.h>
 
 #include <uikit/fonts.hpp>
 
@@ -19,6 +16,14 @@
 #include <cstdlib>
 
 #include "../sago/platform_folders.h"
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
+#ifdef __unix__
+#include <sys/stat.h>
+#endif
 
 namespace {
 
@@ -61,8 +66,20 @@ public:
 
   auto get_app_data_path() const -> std::string override
   {
-    // Is there a better option, such as browser storage, that can be easily used here instead?
-    return ".";
+    if (m_app_name.empty()) {
+      return ".";
+    }
+
+    return sago::getDataHome() + "/" + m_app_name;
+  }
+
+  void make_data_directory()
+  {
+#if defined(__linux__) || defined(__EMSCRIPTEN__)
+    mkdir(get_app_data_path().c_str(), 0755);
+#elif _WIN32
+    CreateDirectory(get_app_data_path().c_str(), nullptr);
+#endif
   }
 
   float get_scale() const override { return m_scale; }
@@ -89,39 +106,52 @@ private:
   ImFont* m_bold_italic_font{ nullptr };
 };
 
-struct loop_data final
-{
-  SDL_Window* window{ nullptr };
-
-  uikit::app* app_instance{ nullptr };
-};
-
 } // namespace
 
+namespace uikit {
+
+} // namespace uikit
+
+#ifdef _WIN32
+int
+WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+{
+#else
 int
 main(int argc, char** argv)
 {
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
+#endif
+  if (glfwInit() != GLFW_TRUE) {
     die("Failed to initialize GLFW.");
     return EXIT_FAILURE;
   }
 
-  // GL ES 2.0 + GLSL 100
-  const char* glsl_version = "#version 100";
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+  int w{ 640 };
+  int h{ 480 };
 
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-  SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-  SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-  SDL_Window* window = SDL_CreateWindow(
-    "Dear ImGui SDL2+OpenGL3 example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
-  SDL_GLContext gl_context = SDL_GL_CreateContext(window);
-  SDL_GL_MakeCurrent(window, gl_context);
-  SDL_GL_SetSwapInterval(1); // Enable vsync
+  GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+  if (monitor) {
+    const auto* video_mode = glfwGetVideoMode(monitor);
+    if (video_mode) {
+      w = video_mode->width;
+      h = video_mode->height;
+    }
+  }
+
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+  glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+  glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+
+  GLFWwindow* window = glfwCreateWindow(w, h, "", nullptr, nullptr);
+  if (!window) {
+    die("Failed to create a window.");
+    return EXIT_FAILURE;
+  }
+
+  glfwMakeContextCurrent(window);
+
+  gladLoadGLES2Loader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 
   platform_impl plt;
 
@@ -130,7 +160,7 @@ main(int argc, char** argv)
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGui_ImplOpenGL3_Init("#version 100");
-  ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+  ImGui_ImplGlfw_InitForOpenGL(window, true);
   auto& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   auto& style = ImGui::GetStyle();
@@ -146,44 +176,45 @@ main(int argc, char** argv)
 
   app->setup(plt);
 
-  SDL_SetWindowTitle(window, plt.get_app_name());
+  glfwSetWindowTitle(window, plt.get_app_name());
+
+  plt.make_data_directory();
 
   const auto ui_path = plt.get_app_data_path() + "/ui.ini";
 
   io.IniFilename = ui_path.c_str();
 
-  auto callback = [](void* loop_data_ptr) {
-    auto* l_dat = static_cast<loop_data*>(loop_data_ptr);
+  while (!glfwWindowShouldClose(window)) {
 
-    SDL_Window* window = l_dat->window;
+    glfwPollEvents();
 
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-      ImGui_ImplSDL2_ProcessEvent(&event);
-    }
+    glfwMakeContextCurrent(window);
 
     ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    const auto& io = ImGui::GetIO();
-    glViewport(0, 0, static_cast<int>(io.DisplaySize.x), static_cast<int>(io.DisplaySize.y));
+    ImPlot::SetCurrentContext(plot_context);
+
+    if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+      glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+
+    int fb_w = 0;
+    int fb_h = 0;
+    glfwGetFramebufferSize(window, &fb_w, &fb_h);
+
+    glViewport(0, 0, fb_w, fb_h);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    l_dat->app_instance->loop();
+    app->loop();
 
     ImGui::Render();
 
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    SDL_GL_SwapWindow(window);
-  };
-
-  loop_data l_dat;
-  l_dat.window = window;
-  l_dat.app_instance = app.get();
-
-  emscripten_set_main_loop_arg(callback, &l_dat, /* fps */ -1, /* simulate_infinite_loop = true */ 1);
+    glfwSwapBuffers(window);
+  }
 
   app->teardown();
 
@@ -192,13 +223,12 @@ main(int argc, char** argv)
   ImPlot::DestroyContext(plot_context);
 
   ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplSDL2_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
 
-  SDL_GL_DeleteContext(gl_context);
-  SDL_DestroyWindow(window);
+  glfwDestroyWindow(window);
 
-  SDL_Quit();
+  glfwTerminate();
 
   return EXIT_SUCCESS;
 }

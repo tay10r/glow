@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
+#include <GLES2/gl2.h>
 
 #include <stdexcept>
 #include <string>

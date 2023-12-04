@@ -44,6 +44,13 @@ target_compile_definitions(imgui PUBLIC ImDrawIdx=unsigned)
 add_library(imgui::imgui ALIAS imgui)
 
 if(EMSCRIPTEN)
+  add_library(imgui_sdl2 STATIC
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.h"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp")
+  target_include_directories(imgui_sdl2 PUBLIC "${imgui_SOURCE_DIR}/backends")
+  target_link_libraries(imgui_sdl2 PUBLIC imgui::imgui)
+  target_compile_options(imgui_sdl2 PUBLIC "SHELL: -s USE_SDL=2")
+  add_library(imgui::sdl2 ALIAS imgui_sdl2)
 else()
   add_library(imgui_glfw STATIC
     "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h"
@@ -93,11 +100,20 @@ add_library(uikit STATIC
 target_include_directories(uikit PUBLIC include)
 target_link_libraries(uikit PUBLIC uikit_font_data imgui::imgui imgui::opengl3 implot::implot)
 
-if(NOT EMSCRIPTEN)
+if(EMSCRIPTEN)
+  target_link_libraries(uikit PUBLIC imgui::sdl2)
+else()
   target_link_libraries(uikit PUBLIC imgui::glfw glfw glad::glad)
 endif()
 
 add_library(uikit::uikit ALIAS uikit)
+
+set(main_file)
+if(EMSCRIPTEN)
+  set(main_file src/main_emscripten.cpp)
+else()
+  set(main_file src/main.cpp)
+endif()
 
 add_library(uikit_main STATIC
   include/uikit/main.hpp
@@ -107,6 +123,13 @@ add_library(uikit_main STATIC
 target_include_directories(uikit_main PUBLIC include)
 target_link_libraries(uikit_main PUBLIC uikit::uikit)
 add_library(uikit::main ALIAS uikit_main)
+
+if(EMSCRIPTEN)
+  target_compile_options(uikit_main PUBLIC "SHELL: -s USE_SDL=2")
+  target_link_options(uikit_main
+    PUBLIC
+      "SHELL: -s USE_SDL=2")
+endif()
 
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   add_executable(demo WIN32
