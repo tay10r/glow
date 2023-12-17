@@ -13,6 +13,12 @@ class platform
 public:
   virtual ~platform() = default;
 
+  virtual void set_auto_close_enabled(bool enabled) {}
+
+  virtual auto exit_requested() -> bool { return false; }
+
+  virtual void queue_exit() {}
+
   /// @brief Use this function to set the name of the application.
   ///
   /// @param name The name to assign the application.
@@ -56,6 +62,8 @@ public:
                                 void (*cb_func)(void*, const char* file_path))
   {
   }
+
+  virtual void save_file_dialog(const char* title, void* cb_data, void (*cb_func)(void*, const char* file_path)) {}
 };
 
 class app

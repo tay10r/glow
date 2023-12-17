@@ -125,6 +125,21 @@ private:
 class platform_impl final : public uikit::platform
 {
 public:
+  platform_impl(GLFWwindow* window)
+    : m_window(window)
+  {
+  }
+
+  auto is_auto_close_enabled() const -> bool { return m_auto_close_enabled; }
+
+  void set_auto_close_enabled(bool enabled) override { m_auto_close_enabled = enabled; }
+
+  auto exit_requested() -> bool override { return !!glfwWindowShouldClose(m_window); }
+
+  void queue_exit() override { m_exit_queued = true; }
+
+  auto exit_queued() const -> bool { return m_exit_queued; }
+
   void build_fonts()
   {
     const float font_size{ 16 * m_scale };
@@ -215,6 +230,8 @@ public:
   }
 
 private:
+  GLFWwindow* m_window{ nullptr };
+
   std::string m_app_name;
 
   float m_scale{ 1 };
@@ -230,6 +247,10 @@ private:
   ImFont* m_bold_italic_font{ nullptr };
 
   std::unique_ptr<dialog> m_dialog;
+
+  bool m_exit_queued{ false };
+
+  bool m_auto_close_enabled{ true };
 };
 
 } // namespace
@@ -275,7 +296,7 @@ main(int argc, char** argv)
 
   gladLoadGLES2Loader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 
-  platform_impl plt;
+  platform_impl plt(window);
 
   glClearColor(0, 0, 0, 1);
 
@@ -306,11 +327,15 @@ main(int argc, char** argv)
 
   io.IniFilename = ui_path.c_str();
 
-  while (!glfwWindowShouldClose(window)) {
+  while (!plt.exit_queued()) {
 
     glfwPollEvents();
 
     plt.poll_dialog();
+
+    if (plt.exit_requested() && plt.is_auto_close_enabled()) {
+      break;
+    }
 
     glfwMakeContextCurrent(window);
 
@@ -329,6 +354,7 @@ main(int argc, char** argv)
     glfwGetFramebufferSize(window, &fb_w, &fb_h);
 
     glViewport(0, 0, fb_w, fb_h);
+
     glClear(GL_COLOR_BUFFER_BIT);
 
     app->loop(plt);

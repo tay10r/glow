@@ -16,6 +16,10 @@ public:
 
   void loop(uikit::platform& plt) override
   {
+    if (plt.exit_requested()) {
+      plt.queue_exit();
+    }
+
     ImGui::Begin("Window");
 
     if (ImPlot::BeginPlot("Example Plot")) {

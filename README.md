@@ -19,10 +19,21 @@ namespace {
 class app_impl final : public app
 {
 public:
-  void setup(platform& plt) override { plt.set_app_name("My Demo App"); }
-  void teardown() { }
-  void loop() {
+  void setup(uikit::platform& plt) override { plt.set_app_name("My Demo App"); }
+
+  void teardown(uikit::platform& plt) { }
+
+  void loop(uikit::platform& plt) {
+
+    // In setup() you can disable auto-close with uikit::platform::set_auto_close_enabled and allow the application to
+    // decide when to exit.
+    //
+    // if (plt.exit_requested()) {
+    //   plt.queue_exit();
+    // }
+
     ImGui::Begin("Test");
+
     ImGui::End();
   }
 };
