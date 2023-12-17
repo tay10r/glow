@@ -116,8 +116,8 @@ else()
 endif()
 
 add_library(uikit_main STATIC
+  ${main_file}
   include/uikit/main.hpp
-  src/main.cpp
   sago/platform_folders.h
   sago/platform_folders.cpp)
 target_include_directories(uikit_main PUBLIC include)
