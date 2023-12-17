@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <imgui.h>
 
@@ -42,6 +43,19 @@ public:
   virtual auto get_bold_font() -> ImFont* = 0;
 
   virtual auto get_bold_italic_font() -> ImFont* = 0;
+
+  virtual void open_directory_dialog(const char* title,
+                                     void* cb_data,
+                                     void (*cb_func)(void*, const char* directory_path))
+  {
+  }
+
+  virtual void open_file_dialog(const char* title,
+                                const std::vector<std::string>& filters,
+                                void* cb_data,
+                                void (*cb_func)(void*, const char* file_path))
+  {
+  }
 };
 
 class app
@@ -56,10 +70,10 @@ public:
   virtual void setup(platform&) = 0;
 
   /// @brief Called when the application is exiting, to clean up resources.
-  virtual void teardown() = 0;
+  virtual void teardown(platform&) = 0;
 
   /// @brief Called when a frame is to be rendered.
-  virtual void loop() = 0;
+  virtual void loop(platform&) = 0;
 };
 
 } // namespace uikit

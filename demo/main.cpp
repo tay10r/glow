@@ -12,9 +12,9 @@ class app_impl final : public uikit::app
 public:
   void setup(uikit::platform& plt) override { plt.set_app_name("uikit_demo_app"); }
 
-  void teardown() override {}
+  void teardown(uikit::platform&) override {}
 
-  void loop() override
+  void loop(uikit::platform& plt) override
   {
     ImGui::Begin("Window");
 
@@ -23,7 +23,13 @@ public:
       ImPlot::EndPlot();
     }
 
-    ImGui::Button("Test");
+    if (ImGui::Button("Open File")) {
+      plt.open_file_dialog("Example File Dialog", {}, nullptr, nullptr);
+    }
+
+    if (ImGui::Button("Open Directory")) {
+      plt.open_directory_dialog("Example Directory Dialog", nullptr, nullptr);
+    }
 
     ImGui::End();
   }

@@ -90,6 +90,11 @@ target_include_directories(implot PUBLIC "${implot_SOURCE_DIR}")
 target_link_libraries(implot PUBLIC imgui::imgui)
 add_library(implot::implot ALIAS implot)
 
+if(NOT EMSCRIPTEN)
+  FetchContent_Declare(pfd URL "https://github.com/samhocevar/portable-file-dialogs/archive/refs/tags/0.1.0.zip")
+  FetchContent_MakeAvailable(pfd)
+endif()
+
 add_library(uikit STATIC
   include/uikit/shader_compiler.hpp
   include/uikit/fonts.hpp
@@ -98,12 +103,17 @@ add_library(uikit STATIC
   src/shader_compiler.cpp
   src/viewport.cpp)
 target_include_directories(uikit PUBLIC include)
-target_link_libraries(uikit PUBLIC uikit_font_data imgui::imgui imgui::opengl3 implot::implot)
+target_link_libraries(uikit
+  PUBLIC
+    uikit_font_data
+    imgui::imgui
+    imgui::opengl3
+    implot::implot)
 
 if(EMSCRIPTEN)
   target_link_libraries(uikit PUBLIC imgui::sdl2)
 else()
-  target_link_libraries(uikit PUBLIC imgui::glfw glfw glad::glad)
+  target_link_libraries(uikit PUBLIC imgui::glfw glfw glad::glad portable_file_dialogs)
 endif()
 
 add_library(uikit::uikit ALIAS uikit)

@@ -93,6 +93,8 @@ struct loop_data final
 {
   SDL_Window* window{ nullptr };
 
+  uikit::platform* plt{ nullptr };
+
   uikit::app* app_instance{ nullptr };
 };
 
@@ -170,7 +172,7 @@ main(int argc, char** argv)
     glViewport(0, 0, static_cast<int>(io.DisplaySize.x), static_cast<int>(io.DisplaySize.y));
     glClear(GL_COLOR_BUFFER_BIT);
 
-    l_dat->app_instance->loop();
+    l_dat->app_instance->loop(*l_dat->plt);
 
     ImGui::Render();
 
@@ -181,11 +183,12 @@ main(int argc, char** argv)
 
   loop_data l_dat;
   l_dat.window = window;
+  l_dat.plt = &plt;
   l_dat.app_instance = app.get();
 
   emscripten_set_main_loop_arg(callback, &l_dat, /* fps */ -1, /* simulate_infinite_loop = true */ 1);
 
-  app->teardown();
+  app->teardown(plt);
 
   app.reset();
 

@@ -19,6 +19,8 @@
 
 #include "../sago/platform_folders.h"
 
+#include <portable-file-dialogs.h>
+
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -35,6 +37,90 @@ die(const char* msg)
   std::cerr << msg << std::endl;
   std::abort();
 }
+
+class dialog
+{
+public:
+  virtual ~dialog() = default;
+
+  virtual void cancel() = 0;
+
+  virtual bool try_complete() = 0;
+};
+
+class directory_dialog final : public dialog
+{
+public:
+  directory_dialog(const char* title, void* cb_data, void (*cb_func)(void*, const char* path))
+    : m_cb_data(cb_data)
+    , m_cb_func(cb_func)
+    , m_dialog(title)
+  {
+  }
+
+  void cancel() override { m_dialog.kill(); }
+
+  bool try_complete() override
+  {
+    if (!m_dialog.ready()) {
+      return false;
+    }
+
+    const auto path = m_dialog.result();
+    if (m_cb_func) {
+      m_cb_func(m_cb_data, path.c_str());
+    }
+
+    return true;
+  }
+
+private:
+  void* m_cb_data{ nullptr };
+
+  void (*m_cb_func)(void*, const char*){ nullptr };
+
+  pfd::select_folder m_dialog;
+};
+
+class open_file_dialog final : public dialog
+{
+public:
+  open_file_dialog(const char* title,
+                   const std::vector<std::string>& filters,
+                   void* cb_data,
+                   void (*cb_func)(void*, const char*))
+    : m_dialog(title, "", filters)
+    , m_cb_data(cb_data)
+    , m_cb_func(cb_func)
+  {
+  }
+
+  void cancel() override { m_dialog.kill(); }
+
+  bool try_complete() override
+  {
+    if (!m_dialog.ready()) {
+      return false;
+    }
+
+    const auto results = m_dialog.result();
+
+    if (m_cb_func) {
+      for (const auto& path : results) {
+        m_cb_func(m_cb_data, path.c_str());
+      }
+    }
+
+    return true;
+  }
+
+private:
+  pfd::open_file m_dialog;
+
+  void* m_cb_data{ nullptr };
+
+  void (*m_cb_func)(void* cb_data, const char* path){ nullptr };
+};
 
 class platform_impl final : public uikit::platform
 {
@@ -92,6 +178,42 @@ public:
     m_scale_changed = true;
   }
 
+  void poll_dialog()
+  {
+    if (!m_dialog) {
+      return;
+    }
+
+    if (!m_dialog->try_complete()) {
+      return;
+    }
+
+    m_dialog.reset();
+  }
+
+  void open_directory_dialog(const char* title,
+                             void* cb_data,
+                             void (*cb_func)(void*, const char* directory_path)) override
+  {
+    if (m_dialog) {
+      m_dialog->cancel();
+    }
+
+    m_dialog = std::make_unique<directory_dialog>(title, cb_data, cb_func);
+  }
+
+  void open_file_dialog(const char* title,
+                        const std::vector<std::string>& filters,
+                        void* cb_data,
+                        void (*cb_func)(void*, const char* directory_path)) override
+  {
+    if (m_dialog) {
+      m_dialog->cancel();
+    }
+
+    m_dialog = std::make_unique<::open_file_dialog>(title, filters, cb_data, cb_func);
+  }
+
 private:
   std::string m_app_name;
 
@@ -106,13 +228,11 @@ private:
   ImFont* m_bold_font{ nullptr };
 
   ImFont* m_bold_italic_font{ nullptr };
+
+  std::unique_ptr<dialog> m_dialog;
 };
 
 } // namespace
-
-namespace uikit {
-
-} // namespace uikit
 
 #ifdef _WIN32
 int
@@ -190,6 +310,8 @@ main(int argc, char** argv)
 
     glfwPollEvents();
 
+    plt.poll_dialog();
+
     glfwMakeContextCurrent(window);
 
     ImGui_ImplOpenGL3_NewFrame();
@@ -209,7 +331,7 @@ main(int argc, char** argv)
     glViewport(0, 0, fb_w, fb_h);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    app->loop();
+    app->loop(plt);
 
     ImGui::Render();
 
@@ -218,7 +340,7 @@ main(int argc, char** argv)
     glfwSwapBuffers(window);
   }
 
-  app->teardown();
+  app->teardown(plt);
 
   app.reset();
 
