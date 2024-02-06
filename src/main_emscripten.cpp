@@ -22,13 +22,6 @@
 
 namespace {
 
-void
-die(const char* msg)
-{
-  std::cerr << msg << std::endl;
-  std::abort();
-}
-
 class platform_impl final : public uikit::platform
 {
 public:
@@ -104,7 +97,7 @@ int
 main(int argc, char** argv)
 {
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
-    die("Failed to initialize GLFW.");
+    std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
     return EXIT_FAILURE;
   }
 
