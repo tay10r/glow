@@ -4,9 +4,9 @@ project(uikit)
 
 include(cmake/CMakeRC.cmake)
 
-set(glfw_url   "https://github.com/glfw/glfw/archive/refs/tags/3.3.8.zip"               CACHE STRING "The release URL of GLFW.")
-set(imgui_url  "https://github.com/ocornut/imgui/archive/refs/tags/v1.89.9-docking.zip" CACHE STRING "The release URL of ImGui.")
-set(implot_url "https://github.com/epezent/implot/archive/refs/tags/v0.16.zip"          CACHE STRING "The release URL of ImPlot.")
+set(IMGUI_URL "https://github.com/ocornut/imgui/archive/refs/tags/v1.89.9-docking.zip" CACHE STRING "The release URL of ImGui.")
+
+set(IMPLOT_URL "https://github.com/epezent/implot/archive/refs/tags/v0.16.zip" CACHE STRING "The release URL of ImPlot.")
 
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/overrides.cmake")
   include("${CMAKE_CURRENT_SOURCE_DIR}/overrides.cmake")
@@ -19,16 +19,11 @@ endif()
 include(FetchContent)
 
 if(NOT EMSCRIPTEN)
-  set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-  set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
-  set(GLFW_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
-  set(GLFW_INSTALL        OFF CACHE BOOL "" FORCE)
-  FetchContent_Declare(glfw URL "${glfw_url}")
-  FetchContent_MakeAvailable(glfw)
+  find_package(glfw3 CONFIG REQUIRED)
   add_subdirectory(gles2)
 endif()
 
-FetchContent_Declare(imgui URL "${imgui_url}")
+FetchContent_Declare(imgui URL "${IMGUI_URL}")
 FetchContent_MakeAvailable(imgui)
 FetchContent_GetProperties(imgui)
 
@@ -79,7 +74,7 @@ cmrc_add_resource_library(uikit_font_data
   "fonts/JetBrainsMonoNL-BoldItalic.ttf"
   WHENCE "fonts")
 
-FetchContent_Declare(implot URL "${implot_url}")
+FetchContent_Declare(implot URL "${IMPLOT_URL}")
 FetchContent_MakeAvailable(implot)
 FetchContent_GetProperties(implot)
 

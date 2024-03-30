@@ -1,5 +1,7 @@
 #include <uikit/shader_compiler.hpp>
 
+#include <sstream>
+
 #include <cstring>
 
 namespace uikit {
@@ -18,8 +20,20 @@ shader_compile_error::get_source() const -> const std::string&
 
 namespace {
 
-GLuint
-compile_single_shader(const char* source, GLenum type)
+auto
+format(const std::vector<std::pair<std::string, std::string>>& defines) -> std::string
+{
+  std::ostringstream stream;
+  stream << "#version 100\n";
+  for (const auto& def : defines) {
+    stream << "#define " << def.first << ' ' << def.second << '\n';
+  }
+  stream << "#line 1\n";
+  return stream.str();
+}
+
+auto
+compile_single_shader(const char* source, GLenum type) -> GLuint
 {
   GLuint id = glCreateShader(type);
 
@@ -59,15 +73,23 @@ compile_single_shader(const char* source, GLenum type)
 } // namespace
 
 GLuint
-compile_shader(const char* vert_source, const char* frag_source)
+compile_shader(const char* vert_source_in,
+               const char* frag_source_in,
+               const std::vector<std::pair<std::string, std::string>>& defines)
 {
-  GLuint vert_id = compile_single_shader(vert_source, GL_VERTEX_SHADER);
+  const auto defs = format(defines);
+
+  const std::string vert_source = defs + vert_source_in;
+  const std::string frag_source = defs + frag_source_in;
+
+  GLuint vert_id = compile_single_shader(vert_source.c_str(), GL_VERTEX_SHADER);
 
   GLuint frag_id{ 0 };
 
   try {
-    frag_id = compile_single_shader(frag_source, GL_FRAGMENT_SHADER);
+    frag_id = compile_single_shader(frag_source.c_str(), GL_FRAGMENT_SHADER);
   } catch (const shader_compile_error& e) {
+    glDeleteShader(vert_id);
     throw e;
   }
 

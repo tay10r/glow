@@ -4,6 +4,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace uikit {
 
@@ -37,9 +38,13 @@ public:
  *
  * @return The ID of the linked program.
  *
+ * @param defines A series of definitions to prepend to each shader string.
+ *
  * @note This function will throw an exception if an error occurs.
  * */
 GLuint
-compile_shader(const char* vert_source, const char* frag_source);
+compile_shader(const char* vert_source,
+               const char* frag_source,
+               const std::vector<std::pair<std::string, std::string>>& defines);
 
 } // namespace uikit
