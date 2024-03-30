@@ -18,11 +18,13 @@
 
 #include <cstdlib>
 
+#include "platform_base.h"
+
 #include "../sago/platform_folders.h"
 
 namespace {
 
-class platform_impl final : public uikit::platform
+class platform_impl final : public uikit::platform_base
 {
 public:
   void build_fonts()

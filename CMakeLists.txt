@@ -20,6 +20,7 @@ include(FetchContent)
 
 if(NOT EMSCRIPTEN)
   find_package(glfw3 CONFIG REQUIRED)
+  find_package(OpenAL CONFIG REQUIRED)
   add_subdirectory(gles2)
 endif()
 
@@ -124,9 +125,17 @@ add_library(uikit_main STATIC
   ${main_file}
   include/uikit/main.hpp
   sago/platform_folders.h
-  sago/platform_folders.cpp)
+  sago/platform_folders.cpp
+  src/platform_base.h
+  src/platform_base.cpp)
 target_include_directories(uikit_main PUBLIC include)
 target_link_libraries(uikit_main PUBLIC uikit::uikit)
+if(EMSCRIPTEN)
+  target_link_libraries(uikit_main PUBLIC openal)
+else()
+  target_link_libraries(uikit_main PUBLIC OpenAL::OpenAL)
+endif()
+
 add_library(uikit::main ALIAS uikit_main)
 
 if(EMSCRIPTEN)

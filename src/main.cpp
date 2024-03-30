@@ -21,6 +21,8 @@
 
 #include <portable-file-dialogs.h>
 
+#include "platform_base.h"
+
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -122,7 +124,7 @@ private:
   void (*m_cb_func)(void* cb_data, const char* path){ nullptr };
 };
 
-class platform_impl final : public uikit::platform
+class platform_impl final : public uikit::platform_base
 {
 public:
   platform_impl(GLFWwindow* window)
