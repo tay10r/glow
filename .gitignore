@@ -1,3 +1,4 @@
 .cache
 build
 emscripten-build
+*.ini

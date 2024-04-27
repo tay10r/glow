@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.14.7)
 
 project(uikit)
 
+option(UIKIT_PYTHON "Whether or not to build the Python bindings." OFF)
+
 include(cmake/CMakeRC.cmake)
 
 set(IMGUI_URL "https://github.com/ocornut/imgui/archive/refs/tags/v1.89.9-docking.zip" CACHE STRING "The release URL of ImGui.")
@@ -16,57 +18,14 @@ if(POLICY CMP0135)
   cmake_policy(SET CMP0135 NEW)
 endif()
 
-include(FetchContent)
-
 if(NOT EMSCRIPTEN)
   find_package(glfw3 CONFIG REQUIRED)
   find_package(OpenAL CONFIG REQUIRED)
   add_subdirectory(gles2)
 endif()
 
-FetchContent_Declare(imgui URL "${IMGUI_URL}")
-FetchContent_MakeAvailable(imgui)
-FetchContent_GetProperties(imgui)
-
-add_library(imgui STATIC
-  "${imgui_SOURCE_DIR}/imgui.cpp"
-  "${imgui_SOURCE_DIR}/imgui_tables.cpp"
-  "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
-  "${imgui_SOURCE_DIR}/imgui_draw.cpp"
-  "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h"
-  "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp")
-target_include_directories(imgui PUBLIC "${imgui_SOURCE_DIR}" "${imgui_SOURCE_DIR}/misc/cpp")
-target_compile_definitions(imgui PUBLIC ImDrawIdx=unsigned)
-add_library(imgui::imgui ALIAS imgui)
-
-if(EMSCRIPTEN)
-  add_library(imgui_sdl2 STATIC
-    "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.h"
-    "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp")
-  target_include_directories(imgui_sdl2 PUBLIC "${imgui_SOURCE_DIR}/backends")
-  target_link_libraries(imgui_sdl2 PUBLIC imgui::imgui)
-  target_compile_options(imgui_sdl2 PUBLIC "SHELL: -s USE_SDL=2")
-  add_library(imgui::sdl2 ALIAS imgui_sdl2)
-else()
-  add_library(imgui_glfw STATIC
-    "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h"
-    "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp")
-  target_include_directories(imgui_glfw PUBLIC "${imgui_SOURCE_DIR}/backends")
-  target_link_libraries(imgui_glfw PUBLIC imgui::imgui glfw)
-  target_compile_definitions(imgui_glfw PUBLIC GLFW_INCLUDE_NONE=1)
-  add_library(imgui::glfw ALIAS imgui_glfw)
-endif()
-
-add_library(imgui_opengl3 STATIC
-  "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h"
-  "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp")
-target_include_directories(imgui_opengl3 PUBLIC "${imgui_SOURCE_DIR}/backends")
-target_link_libraries(imgui_opengl3 PUBLIC imgui::imgui)
-if(NOT EMSCRIPTEN)
-  target_link_libraries(imgui_opengl3 PUBLIC glad::glad)
-endif()
-target_compile_definitions(imgui_opengl3 PUBLIC IMGUI_IMPL_OPENGL_ES2=1)
-add_library(imgui::opengl3 ALIAS imgui_opengl3)
+include(cmake/ImGui.cmake)
+include(cmake/ImPlot.cmake)
 
 cmrc_add_resource_library(uikit_font_data
   "fonts/JetBrainsMonoNL-Regular.ttf"
@@ -74,17 +33,6 @@ cmrc_add_resource_library(uikit_font_data
   "fonts/JetBrainsMonoNL-Bold.ttf"
   "fonts/JetBrainsMonoNL-BoldItalic.ttf"
   WHENCE "fonts")
-
-FetchContent_Declare(implot URL "${IMPLOT_URL}")
-FetchContent_MakeAvailable(implot)
-FetchContent_GetProperties(implot)
-
-add_library(implot STATIC
-  "${implot_SOURCE_DIR}/implot.cpp"
-  "${implot_SOURCE_DIR}/implot_items.cpp")
-target_include_directories(implot PUBLIC "${implot_SOURCE_DIR}")
-target_link_libraries(implot PUBLIC imgui::imgui)
-add_library(implot::implot ALIAS implot)
 
 if(NOT EMSCRIPTEN)
   FetchContent_Declare(pfd URL "https://github.com/samhocevar/portable-file-dialogs/archive/refs/tags/0.1.0.zip")
@@ -113,6 +61,10 @@ else()
 endif()
 
 add_library(uikit::uikit ALIAS uikit)
+
+if(UIKIT_PYTHON)
+  add_subdirectory(python)
+endif()
 
 set(main_file)
 if(EMSCRIPTEN)
