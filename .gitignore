@@ -2,3 +2,4 @@
 build
 emscripten-build
 *.ini
+dist

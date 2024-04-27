@@ -7,6 +7,17 @@
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
+    },
+    {
+      "name": "pyproject",
+      "cacheVariables": {
+        "UIKIT_INSTALL": "ON",
+        "UIKIT_PYTHON": "ON",
+        "UIKIT_MAIN": "OFF",
+        "UIKIT_BUILD_GLFW": "ON",
+	"UIKIT_BUILD_PYBIND11": "ON",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
     }
   ]
 }
