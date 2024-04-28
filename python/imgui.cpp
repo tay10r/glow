@@ -161,7 +161,7 @@ begin_tab_item(const char* label, const TabItemFlags flags) -> bool
 } // namespace
 
 void
-def_imgui_module(pybind11::module& m)
+def_imgui_module(pybind11::module_&& m)
 {
   py::class_<ImVec2>(m, "Vec2")
     .def(py::init<float, float>(), py::arg("x"), py::arg("y"))

@@ -13,7 +13,7 @@ namespace py = pybind11;
 } // namespace
 
 void
-def_pfd_module(pybind11::module_& m)
+def_pfd_module(pybind11::module_&& m)
 {
   py::class_<pfd::open_file>(m, "OpenFileDialog")
     .def(py::init<std::string, std::string, std::vector<std::string>>(),

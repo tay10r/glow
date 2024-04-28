@@ -109,7 +109,7 @@ plot_image(const char* label,
 } // namespace
 
 void
-def_implot_module(pybind11::module_& m)
+def_implot_module(pybind11::module_&& m)
 {
   py::enum_<Flags>(m, "Flags")
     .value("NONE", Flags::None)

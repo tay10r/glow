@@ -195,7 +195,7 @@ tex_sub_image_2d(TextureTarget target,
 } // namespace
 
 void
-def_gl_module(pybind11::module_& mod)
+def_gl_module(pybind11::module_&& mod)
 {
   py::enum_<Error>(mod, "Error")
     .value("NO_ERROR", Error::NoError)

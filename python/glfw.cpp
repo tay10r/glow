@@ -208,7 +208,7 @@ namespace py = pybind11;
 } // namespace
 
 void
-def_glfw_module(py::module_& m)
+def_glfw_module(py::module_&& m)
 {
   m.def("init", init);
   m.def("terminate", glfwTerminate);

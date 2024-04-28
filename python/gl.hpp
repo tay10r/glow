@@ -27,6 +27,6 @@ struct gl_texture final : public gl_object<gl_texture>
 {};
 
 void
-def_gl_module(pybind11::module_& m);
+def_gl_module(pybind11::module_&& m);
 
 } // namespace uikit::python

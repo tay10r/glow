@@ -5,6 +5,6 @@
 namespace uikit::python {
 
 void
-def_imgui_module(pybind11::module_& m);
+def_imgui_module(pybind11::module_&& m);
 
 } // namespace uikit::python
