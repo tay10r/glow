@@ -6,6 +6,9 @@
 
 #include <implot.h>
 
+#include <sstream>
+#include <stdexcept>
+
 #include <cstddef>
 #include <cstdint>
 
@@ -56,7 +59,9 @@ plot_line(const char* label, py::array_t<float, py::array::f_style | py::array::
   } else if (data.ndim() == 1) {
     ImPlot::PlotLine(label, data.data(), static_cast<int>(shape[0]), 1.0, 0.0, static_cast<ImPlotLineFlags>(flags));
   } else {
-    // TODO : throw
+    std::ostringstream stream;
+    stream << "Line plots accept 1 or 2 dimensions, not " << data.ndim();
+    throw std::runtime_error(stream.str());
   }
 }
 
@@ -77,7 +82,9 @@ plot_scatter(const char* label,
   } else if (data.ndim() == 1) {
     ImPlot::PlotScatter(label, data.data(), shape[0], 1.0, 0.0, static_cast<ImPlotScatterFlags>(flags));
   } else {
-    // TODO : throw
+    std::ostringstream stream;
+    stream << "Scatter plots accept 1 or 2 dimensions, not " << data.ndim();
+    throw std::runtime_error(stream.str());
   }
 }
 

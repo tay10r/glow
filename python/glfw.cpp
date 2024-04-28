@@ -14,6 +14,7 @@
 #include <implot.h>
 
 #include <optional>
+#include <stdexcept>
 #include <string>
 
 namespace uikit::python {
@@ -23,17 +24,15 @@ namespace {
 namespace py = pybind11;
 
 auto
-init() -> bool
+init() -> void
 {
   if (glfwInit() != GLFW_TRUE) {
-    return false;
+    throw std::runtime_error("Failed to initialize GLFW.");
   }
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-
-  return true;
 }
 
 class monitor final
