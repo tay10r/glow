@@ -1,4 +1,4 @@
-name: Build Python Package
+name: Build Python Package (Ubuntu 20.04)
 on: push
 permissions:
   contents: read
