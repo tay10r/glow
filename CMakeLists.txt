@@ -66,6 +66,10 @@ target_link_libraries(uikit
     imgui::opengl3
     implot::implot)
 
+if(UIKIT_PYTHON)
+  set_target_properties(uikit PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
+
 if(EMSCRIPTEN)
   target_link_libraries(uikit PUBLIC imgui::sdl2)
 else()
