@@ -20,6 +20,10 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/overrides.cmake")
   include("${CMAKE_CURRENT_SOURCE_DIR}/overrides.cmake")
 endif()
 
+if(UIKIT_PYTHON)
+  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+
 if(POLICY CMP0135)
   cmake_policy(SET CMP0135 NEW)
 endif()
@@ -65,11 +69,6 @@ target_link_libraries(uikit
     imgui::imgui
     imgui::opengl3
     implot::implot)
-
-if(UIKIT_PYTHON)
-  set_target_properties(uikit PROPERTIES POSITION_INDEPENDENT_CODE ON)
-  set_target_properties(uikit_font_data PROPERTIES POSITION_INDEPENDENT_CODE ON)
-endif()
 
 if(EMSCRIPTEN)
   target_link_libraries(uikit PUBLIC imgui::sdl2)
