@@ -28,6 +28,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install build
-        sudo apt-get install -y xorg-dev libwayland-bin
+        sudo apt-get install -y xorg-dev libwayland-dev libxkbcommon-dev
     - name: Build package
       run: python -m build
