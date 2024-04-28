@@ -6,7 +6,7 @@
 #include "implot.hpp"
 #include "pfd.hpp"
 
-PYBIND11_MODULE(libs, m)
+PYBIND11_MODULE(uikitpy, m)
 {
   uikit::python::def_glfw_module(m.def_submodule("glfw", "Bindings to the GLFW library."));
   uikit::python::def_gl_module(m.def_submodule("gl", "Bindings to the OpenGL ES 2 library."));

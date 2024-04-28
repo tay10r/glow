@@ -1,9 +1,9 @@
-import uikitpy.libs.glfw as glfw
-import uikitpy.libs.gl as gl
-import uikitpy.libs.imgui as imgui
-import uikitpy.libs.implot as implot
-import uikitpy.libs.pfd as pfd
-from uikitpy.libs.imgui import WindowFlags
+import uikitpy.glfw as glfw
+import uikitpy.gl as gl
+import uikitpy.imgui as imgui
+import uikitpy.implot as implot
+import uikitpy.pfd as pfd
+from uikitpy.imgui import WindowFlags
 import numpy as np
 
 def main():
