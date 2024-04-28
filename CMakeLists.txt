@@ -68,6 +68,7 @@ target_link_libraries(uikit
 
 if(UIKIT_PYTHON)
   set_target_properties(uikit PROPERTIES POSITION_INDEPENDENT_CODE ON)
+  set_target_properties(uikit_font_data PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 
 if(EMSCRIPTEN)
