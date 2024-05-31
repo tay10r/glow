@@ -6,25 +6,12 @@
 
 #include <imgui.h>
 
-#include <AL/al.h>
-#include <AL/alc.h>
-
 namespace uikit {
 
 class platform
 {
 public:
   virtual ~platform() = default;
-
-  /// @brief Gets the audio device associated with the platform.
-  ///
-  /// @return A pointer to the audio device.
-  virtual auto get_audio_device() -> ALCdevice* = 0;
-
-  /// @brief Gets the audio context associated with the platform.
-  ///
-  /// @return A pointer to the audio context.
-  virtual auto get_audio_context() -> ALCcontext* = 0;
 
   virtual void set_auto_close_enabled(bool enabled) {}
 

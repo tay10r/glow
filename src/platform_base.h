@@ -21,10 +21,6 @@ public:
 
   ~platform_base() override;
 
-  auto get_audio_device() -> ALCdevice* override;
-
-  auto get_audio_context() -> ALCcontext* override;
-
 private:
   impl* m_impl{ nullptr };
 };

@@ -84,8 +84,6 @@ endif()
 
 if(UIKIT_MAIN)
 
-  find_package(OpenAL CONFIG REQUIRED)
-
   set(main_file)
   if(EMSCRIPTEN)
     set(main_file src/main_emscripten.cpp)
@@ -102,11 +100,6 @@ if(UIKIT_MAIN)
     src/platform_base.cpp)
   target_include_directories(uikit_main PUBLIC include)
   target_link_libraries(uikit_main PUBLIC uikit::uikit)
-  if(EMSCRIPTEN)
-    target_link_libraries(uikit_main PUBLIC openal)
-  else()
-    target_link_libraries(uikit_main PUBLIC OpenAL::OpenAL)
-  endif()
 
   add_library(uikit::main ALIAS uikit_main)
 
