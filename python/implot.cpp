@@ -78,7 +78,7 @@ plot_scatter(const char* label,
 {
   const auto* shape = data.shape();
   if (data.ndim() == 2) {
-    ImPlot::PlotScatter(label, data.data(), data.data() + shape[0], shape[0], static_cast<ImPlotScatterFlags>(flags));
+    ImPlot::PlotScatter(label, data.data(), data.data() + shape[1], shape[1], static_cast<ImPlotScatterFlags>(flags));
   } else if (data.ndim() == 1) {
     ImPlot::PlotScatter(label, data.data(), shape[0], 1.0, 0.0, static_cast<ImPlotScatterFlags>(flags));
   } else {
