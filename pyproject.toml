@@ -6,7 +6,7 @@ build-backend = 'scikit_build_core.build'
 
 [project]
 name = 'uikitpy'
-version = '0.2.0'
+version = '0.2.2'
 description = 'A set of libraries for UI development.'
 readme = 'README.md'
 authors = [
