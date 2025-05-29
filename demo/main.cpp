@@ -4,18 +4,6 @@
 
 #include <implot.h>
 
-#include <algorithm>
-#include <limits>
-
-#include <cmath>
-#include <cstdint>
-
-#ifndef M_PI
-#define M_PI 3.141592653589793
-#endif
-
-#include <cassert>
-
 namespace {
 
 class app_impl final : public uikit::app
@@ -56,12 +44,6 @@ public:
   }
 
 protected:
-  template<typename Scalar>
-  static auto clamp(Scalar x, Scalar min, Scalar max) -> Scalar
-  {
-    return std::max(std::min(x, max), min);
-  }
-
   void render_plots()
   {
     if (ImPlot::BeginPlot("Example Plot")) {
@@ -83,12 +65,4 @@ protected:
 
 } // namespace
 
-namespace uikit {
-
-auto
-app::create() -> std::unique_ptr<app>
-{
-  return std::unique_ptr<app>(new app_impl());
-}
-
-} // namespace uikit
+UIKIT_APP(app_impl)
