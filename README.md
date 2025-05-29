@@ -15,10 +15,8 @@ You'll need to set the environment variable `VCPKG_ROOT` to where the initialize
 Finally, you'll need to ensure you have the dependencies installed:
 
 ```
-./vcpkg install glfw openal-soft pybind11
+./vcpkg install glfw pybind11
 ```
-
-*Note: The OpenAL dependency may get dropped in a future release.*
 
 Add this project as a sub directory in CMake either by installing it with `FetchContent` or by adding it as a git submodule and calling `add_subdirectory(uikit)`.
 Link to `uikit::uikit` and `uikit::main` (contains the entry point code) and start your application like this:
@@ -57,12 +55,8 @@ public:
 
 } // namespace
 
-namespace uikit {
-
-auto create_app() -> std::unique_ptr<app> { return std::unique_ptr<uikit::app>(new app_impl()); }
-
-} // namespace uikit
-
+// use this to register your derived `app` class as the entrypoint.
+UIKIT_APP(app_impl)
 ```
 
 ## The Python Interface
