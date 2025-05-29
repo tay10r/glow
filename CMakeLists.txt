@@ -9,7 +9,7 @@ option(UIKIT_PYTHON         "Whether or not to build the Python bindings."   OFF
 option(UIKIT_INSTALL        "Whether or not to build the install rules."     OFF)
 option(UIKIT_BUILD_GLFW     "Whether or not to download and build GLFW."     OFF)
 option(UIKIT_BUILD_PYBIND11 "Whether or not to download and build pybind11." OFF)
-option(UIKIT_MAIN           "Whether or not to build the entry point code."  OFF)
+option(UIKIT_MAIN           "Whether or not to build the entry point code."  ON)
 
 set(GLFW_URL     "https://github.com/glfw/glfw/archive/refs/tags/3.4.zip"                 CACHE STRING "The release URL of GLFW.")
 set(IMGUI_URL    "https://github.com/ocornut/imgui/archive/refs/tags/v1.89.9-docking.zip" CACHE STRING "The release URL of ImGui.")
@@ -58,10 +58,12 @@ endif()
 add_library(uikit STATIC
   include/uikit/shader_compiler.hpp
   include/uikit/fonts.hpp
-  include/uikit/viewport.hpp
+  include/uikit/framebuffer.hpp
+  include/uikit/screen_quad.hpp
   src/fonts.cpp
   src/shader_compiler.cpp
-  src/viewport.cpp)
+  src/framebuffer.cpp
+  src/screen_quad.cpp)
 target_include_directories(uikit PUBLIC include)
 target_link_libraries(uikit
   PUBLIC

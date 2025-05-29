@@ -1,5 +1,4 @@
 #include <uikit/main.hpp>
-#include <uikit/viewport.hpp>
 
 #include <imgui.h>
 
@@ -80,9 +79,6 @@ protected:
       plt.open_directory_dialog("Example Directory Dialog", nullptr, nullptr);
     }
   }
-
-private:
-  std::unique_ptr<uikit::viewport> m_viewport;
 };
 
 } // namespace
