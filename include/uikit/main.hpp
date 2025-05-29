@@ -85,3 +85,22 @@ public:
 };
 
 } // namespace uikit
+
+/**
+ * @brief Use this macro to set a derived @ref app class as the class that gets
+ *        instantiated for the program.
+ *
+ * @details This macro can optionally be used to reduce some of the boiler plate code for instantiating the
+ *          user defined application class. All it does is implement the function in the app base class that
+ *          instantiates the derived one.
+ *
+ * @note Invoke this macro in the global namespace, do not invoke it in a nested namespace or class namespace.
+ * */
+#define UIKIT_APP(app_impl)                                                                                            \
+  namespace uikit {                                                                                                    \
+  auto app::create() -> std::unique_ptr<app>                                                                           \
+  {                                                                                                                    \
+    return std::make_unique<app_impl>();                                                                               \
+  }                                                                                                                    \
+  } // namespace uikit
+
