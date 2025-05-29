@@ -12,7 +12,7 @@ readme = 'README.md'
 authors = [
   { name = 'Taylor Holberton', email = 'taylorcholberton@gmail.com' }
 ]
-requires_python = '>=3.7'
+requires-python = '>=3.7'
 classifiers = [
   'Development Status :: 4 - Beta',
   'License :: OSI Approved :: Apache Software License',
