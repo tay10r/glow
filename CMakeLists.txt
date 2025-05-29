@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14.7)
 
 project(uikit
-  VERSION 0.2.0
+  VERSION 0.2.2
   DESCRIPTION "A set of libraries for application development."
   LANGUAGES C CXX)
 
