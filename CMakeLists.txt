@@ -51,7 +51,7 @@ cmrc_add_resource_library(uikit_font_data
   WHENCE "fonts")
 
 if(NOT EMSCRIPTEN)
-  FetchContent_Declare(pfd URL "https://github.com/samhocevar/portable-file-dialogs/archive/refs/tags/0.1.0.zip")
+  FetchContent_Declare(pfd URL "https://github.com/tay10r/portable-file-dialogs/archive/refs/tags/v1.0.zip")
   FetchContent_MakeAvailable(pfd)
 endif()
 
