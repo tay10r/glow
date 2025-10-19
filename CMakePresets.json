@@ -11,11 +11,11 @@
     {
       "name": "pyproject",
       "cacheVariables": {
-        "UIKIT_INSTALL": "ON",
-        "UIKIT_PYTHON": "ON",
-        "UIKIT_MAIN": "OFF",
-        "UIKIT_BUILD_GLFW": "ON",
-	"UIKIT_BUILD_PYBIND11": "ON",
+        "GLOW_INSTALL": "ON",
+        "GLOW_PYTHON": "ON",
+        "GLOW_MAIN": "OFF",
+        "GLOW_BUILD_GLFW": "ON",
+        "GLOW_BUILD_PYBIND11": "ON",
         "CMAKE_BUILD_TYPE": "Release"
       }
     }
