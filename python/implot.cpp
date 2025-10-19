@@ -12,7 +12,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace uikit::python {
+namespace glow::python {
 
 namespace {
 
@@ -167,4 +167,4 @@ def_implot_module(pybind11::module_&& m)
         py::arg("flags") = ImageFlags::None);
 }
 
-} // namespace uikit::python
+} // namespace glow::python

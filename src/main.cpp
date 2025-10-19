@@ -1,8 +1,8 @@
-#include <uikit/main.hpp>
+#include <glow/main.hpp>
 
 #include <GLFW/glfw3.h>
 
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -10,7 +10,7 @@
 
 #include <implot.h>
 
-#include <uikit/fonts.hpp>
+#include <glow/fonts.hpp>
 
 #include <iostream>
 #include <string>
@@ -124,7 +124,7 @@ private:
   void (*m_cb_func)(void* cb_data, const char* path){ nullptr };
 };
 
-class platform_impl final : public uikit::platform_base
+class platform_impl final : public glow::platform_base
 {
 public:
   platform_impl(GLFWwindow* window)
@@ -146,13 +146,13 @@ public:
   {
     const float font_size{ 16 * m_scale };
 
-    m_regular_font = uikit::open_font("JetBrainsMonoNL-Regular.ttf", font_size);
+    m_regular_font = glow::open_font("JetBrainsMonoNL-Regular.ttf", font_size);
 
-    m_italic_font = uikit::open_font("JetBrainsMonoNL-Italic.ttf", font_size);
+    m_italic_font = glow::open_font("JetBrainsMonoNL-Italic.ttf", font_size);
 
-    m_bold_font = uikit::open_font("JetBrainsMonoNL-Bold.ttf", font_size);
+    m_bold_font = glow::open_font("JetBrainsMonoNL-Bold.ttf", font_size);
 
-    m_bold_italic_font = uikit::open_font("JetBrainsMonoNL-BoldItalic.ttf", font_size);
+    m_bold_italic_font = glow::open_font("JetBrainsMonoNL-BoldItalic.ttf", font_size);
 
     ImGui::GetIO().Fonts->Build();
   }
@@ -317,7 +317,7 @@ main(int argc, char** argv)
 
   plt.build_fonts();
 
-  auto app = uikit::app::create();
+  auto app = glow::app::create();
 
   app->setup(plt);
 

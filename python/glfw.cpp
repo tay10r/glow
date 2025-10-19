@@ -1,6 +1,6 @@
 #include "glfw.hpp"
 
-#include <uikit/fonts.hpp>
+#include <glow/fonts.hpp>
 
 #include <pybind11/stl.h>
 
@@ -17,7 +17,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace uikit::python {
+namespace glow::python {
 
 namespace {
 
@@ -82,7 +82,7 @@ public:
 
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-    uikit::open_font("JetBrainsMonoNL-Regular.ttf", font_size);
+    glow::open_font("JetBrainsMonoNL-Regular.ttf", font_size);
 
     ImGui::GetIO().Fonts->Build();
 
@@ -235,4 +235,4 @@ def_glfw_module(py::module_&& m)
     .def("set_title", &window::set_title, py::arg("title"));
 }
 
-} // namespace uikit::python
+} // namespace glow::python

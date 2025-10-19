@@ -1,6 +1,6 @@
-#include <uikit/framebuffer.hpp>
+#include <glow/framebuffer.hpp>
 
-namespace uikit {
+namespace glow {
 
 framebuffer::framebuffer(const GLsizei width, const GLsizei height)
   : width_(width)
@@ -52,4 +52,4 @@ framebuffer::height() const -> GLsizei
   return height_;
 }
 
-} // namespace uikit
+} // namespace glow

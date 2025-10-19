@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-namespace uikit::python {
+namespace glow::python {
 
 namespace {
 
@@ -299,4 +299,4 @@ def_imgui_module(pybind11::module_&& m)
   m.def("end_tab_item", &ImGui::EndTabItem);
 }
 
-} // namespace uikit::python
+} // namespace glow::python

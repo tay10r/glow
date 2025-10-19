@@ -1,8 +1,8 @@
 #pragma once
 
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 
-namespace uikit {
+namespace glow {
 
 class framebuffer final
 {
@@ -40,4 +40,4 @@ public:
   [[nodiscard]] auto height() const -> GLsizei;
 };
 
-} // namespace uikit
+} // namespace glow

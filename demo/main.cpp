@@ -1,4 +1,4 @@
-#include <uikit/main.hpp>
+#include <glow/main.hpp>
 
 #include <imgui.h>
 
@@ -6,14 +6,14 @@
 
 namespace {
 
-class app_impl final : public uikit::app
+class app_impl final : public glow::app
 {
 public:
-  void setup(uikit::platform& plt) override { plt.set_app_name("uikit_demo_app"); }
+  void setup(glow::platform& plt) override { plt.set_app_name("glow_demo_app"); }
 
-  void teardown(uikit::platform&) override {}
+  void teardown(glow::platform&) override {}
 
-  void loop(uikit::platform& plt) override
+  void loop(glow::platform& plt) override
   {
     if (plt.exit_requested()) {
       plt.queue_exit();
@@ -51,7 +51,7 @@ protected:
     }
   }
 
-  void render_file_dialog_buttons(uikit::platform& plt)
+  void render_file_dialog_buttons(glow::platform& plt)
   {
     if (ImGui::Button("Open File")) {
       plt.open_file_dialog("Example File Dialog", {}, nullptr, nullptr);
@@ -65,4 +65,4 @@ protected:
 
 } // namespace
 
-UIKIT_APP(app_impl)
+GLOW_APP(app_impl)

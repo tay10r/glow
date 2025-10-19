@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-namespace uikit {
+namespace glow {
 
 ImFont*
 open_font(const char* resource_path,
@@ -10,4 +10,4 @@ open_font(const char* resource_path,
           const ImFontConfig* config = nullptr,
           const ImWchar* glyph_ranges = nullptr);
 
-} // namespace uikit
+} // namespace glow

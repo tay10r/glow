@@ -1,6 +1,6 @@
 #include "platform_base.h"
 
-namespace uikit {
+namespace glow {
 
 class platform_base::impl final
 {
@@ -25,4 +25,4 @@ platform_base::~platform_base()
   delete m_impl;
 }
 
-} // namespace uikit
+} // namespace glow

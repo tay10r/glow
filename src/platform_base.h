@@ -1,8 +1,8 @@
 #pragma once
 
-#include <uikit/main.hpp>
+#include <glow/main.hpp>
 
-namespace uikit {
+namespace glow {
 
 class platform_base : public platform
 {
@@ -25,4 +25,4 @@ private:
   impl* m_impl{ nullptr };
 };
 
-} // namespace uikit
+} // namespace glow

@@ -18,29 +18,29 @@ Finally, you'll need to ensure you have the dependencies installed:
 ./vcpkg install glfw pybind11
 ```
 
-Add this project as a sub directory in CMake either by installing it with `FetchContent` or by adding it as a git submodule and calling `add_subdirectory(uikit)`.
-Link to `uikit::uikit` and `uikit::main` (contains the entry point code) and start your application like this:
+Add this project as a sub directory in CMake either by installing it with `FetchContent` or by adding it as a git submodule and calling `add_subdirectory(glow)`.
+Link to `glow::glow` and `glow::main` (contains the entry point code) and start your application like this:
 
 ```cxx
-#include <uikit/main.hpp>
+#include <glow/main.hpp>
 
 #include <imgui.h>
 
 // optionally
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 
 namespace {
 
 class app_impl final : public app
 {
 public:
-  void setup(uikit::platform& plt) override { plt.set_app_name("My Demo App"); }
+  void setup(glow::platform& plt) override { plt.set_app_name("My Demo App"); }
 
-  void teardown(uikit::platform& plt) { }
+  void teardown(glow::platform& plt) { }
 
-  void loop(uikit::platform& plt) {
+  void loop(glow::platform& plt) {
 
-    // In setup() you can disable auto-close with uikit::platform::set_auto_close_enabled and allow the application to
+    // In setup() you can disable auto-close with glow::platform::set_auto_close_enabled and allow the application to
     // decide when to exit.
     //
     // if (plt.exit_requested()) {
@@ -66,20 +66,20 @@ You can also use this project in Python on both Linux and Windows.
 Clone the repository and run:
 
 ```
-pip install path/to/uikit
+pip install path/to/glow
 ```
 
-Where `uikit` is the path to the repository.
+Where `glow` is the path to the repository.
 It works just fine in virtual environments as well.
 
-In a Python file, you can import `uikitpy` which contains submodules for OpenGL ES 2, GLFW, ImGui, ImPlot and portable-file-dialogs.
+In a Python file, you can import `glowpy` which contains submodules for OpenGL ES 3, GLFW, ImGui, ImPlot and portable-file-dialogs.
 
 ```python
-import uikit.gl as gl
-import uikit.glfw as glfw
-import uikit.imgui as imgui
-import uikit.implot as implot
-import uikit.pfd as pfd
+import glow.gl as gl
+import glow.glfw as glfw
+import glow.imgui as imgui
+import glow.implot as implot
+import glow.pfd as pfd
 
 def main():
   glfw.init()

@@ -4,7 +4,7 @@
 
 #include <glad/glad.h>
 
-namespace uikit::python {
+namespace glow::python {
 
 template<typename Derived>
 struct gl_object
@@ -29,4 +29,4 @@ struct gl_texture final : public gl_object<gl_texture>
 void
 def_gl_module(pybind11::module_&& m);
 
-} // namespace uikit::python
+} // namespace glow::python

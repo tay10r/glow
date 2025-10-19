@@ -1,12 +1,14 @@
 #pragma once
 
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 
-namespace uikit {
+namespace glow {
 
 class screen_quad final
 {
-  GLuint id_{};
+  GLuint buffer_{};
+
+  GLuint vertex_array_{};
 
 public:
   screen_quad();
@@ -24,4 +26,4 @@ public:
   void draw(GLint position_attrib);
 };
 
-} // namespace uikit
+} // namespace glow

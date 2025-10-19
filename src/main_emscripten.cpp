@@ -1,4 +1,4 @@
-#include <uikit/main.hpp>
+#include <glow/main.hpp>
 
 #include <emscripten.h>
 
@@ -11,7 +11,7 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_sdl2.h>
 
-#include <uikit/fonts.hpp>
+#include <glow/fonts.hpp>
 
 #include <iostream>
 #include <string>
@@ -24,20 +24,20 @@
 
 namespace {
 
-class platform_impl final : public uikit::platform_base
+class platform_impl final : public glow::platform_base
 {
 public:
   void build_fonts()
   {
     const float font_size{ 16 * m_scale };
 
-    m_regular_font = uikit::open_font("JetBrainsMonoNL-Regular.ttf", font_size);
+    m_regular_font = glow::open_font("JetBrainsMonoNL-Regular.ttf", font_size);
 
-    m_italic_font = uikit::open_font("JetBrainsMonoNL-Italic.ttf", font_size);
+    m_italic_font = glow::open_font("JetBrainsMonoNL-Italic.ttf", font_size);
 
-    m_bold_font = uikit::open_font("JetBrainsMonoNL-Bold.ttf", font_size);
+    m_bold_font = glow::open_font("JetBrainsMonoNL-Bold.ttf", font_size);
 
-    m_bold_italic_font = uikit::open_font("JetBrainsMonoNL-BoldItalic.ttf", font_size);
+    m_bold_italic_font = glow::open_font("JetBrainsMonoNL-BoldItalic.ttf", font_size);
 
     ImGui::GetIO().Fonts->Build();
   }
@@ -88,9 +88,9 @@ struct loop_data final
 {
   SDL_Window* window{ nullptr };
 
-  uikit::platform* plt{ nullptr };
+  glow::platform* plt{ nullptr };
 
-  uikit::app* app_instance{ nullptr };
+  glow::app* app_instance{ nullptr };
 };
 
 } // namespace
@@ -139,7 +139,7 @@ main(int argc, char** argv)
 
   plt.build_fonts();
 
-  auto app = uikit::app::create();
+  auto app = glow::app::create();
 
   app->setup(plt);
 

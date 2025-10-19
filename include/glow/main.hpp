@@ -6,7 +6,7 @@
 
 #include <imgui.h>
 
-namespace uikit {
+namespace glow {
 
 class platform
 {
@@ -84,7 +84,7 @@ public:
   virtual void loop(platform&) = 0;
 };
 
-} // namespace uikit
+} // namespace glow
 
 /**
  * @brief Use this macro to set a derived @ref app class as the class that gets
@@ -96,11 +96,11 @@ public:
  *
  * @note Invoke this macro in the global namespace, do not invoke it in a nested namespace or class namespace.
  * */
-#define UIKIT_APP(app_impl)                                                                                            \
-  namespace uikit {                                                                                                    \
+#define GLOW_APP(app_impl)                                                                                             \
+  namespace glow {                                                                                                     \
   auto app::create() -> std::unique_ptr<app>                                                                           \
   {                                                                                                                    \
     return std::make_unique<app_impl>();                                                                               \
   }                                                                                                                    \
-  } // namespace uikit
+  } // namespace glow
 

@@ -9,7 +9,7 @@
 
 #include <cstddef>
 
-namespace uikit::python {
+namespace glow::python {
 
 namespace {
 
@@ -283,4 +283,4 @@ def_gl_module(pybind11::module_&& mod)
           py::arg("data"));
 }
 
-} // namespace uikit::python
+} // namespace glow::python

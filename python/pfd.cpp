@@ -4,7 +4,7 @@
 
 #include <pybind11/stl.h>
 
-namespace uikit::python {
+namespace glow::python {
 
 namespace {
 
@@ -40,4 +40,4 @@ def_pfd_module(pybind11::module_&& m)
     .def("kill", &pfd::select_folder::kill);
 }
 
-} // namespace uikit::python
+} // namespace glow::python

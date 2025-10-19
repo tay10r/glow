@@ -1,12 +1,12 @@
 #pragma once
 
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 
 #include <stdexcept>
 #include <string>
 #include <vector>
 
-namespace uikit {
+namespace glow {
 
 class shader_error : public std::runtime_error
 {
@@ -47,4 +47,4 @@ compile_shader(const char* vert_source,
                const char* frag_source,
                const std::vector<std::pair<std::string, std::string>>& defines);
 
-} // namespace uikit
+} // namespace glow

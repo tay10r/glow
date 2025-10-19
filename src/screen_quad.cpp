@@ -1,6 +1,6 @@
-#include <uikit/screen_quad.hpp>
+#include <glow/screen_quad.hpp>
 
-namespace uikit {
+namespace glow {
 
 screen_quad::screen_quad()
 {
@@ -15,23 +15,34 @@ screen_quad::screen_quad()
     // clang-format on
   };
 
-  glGenBuffers(1, &id_);
+  glGenBuffers(1, &buffer_);
 
-  glBindBuffer(GL_ARRAY_BUFFER, id_);
+  glBindBuffer(GL_ARRAY_BUFFER, buffer_);
 
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  glGenVertexArrays(1, &vertex_array_);
+
+  glBindVertexArray(vertex_array_);
+
+  glEnableVertexAttribArray(0);
+
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, reinterpret_cast<const void*>(0));
+}
+
+screen_quad::~screen_quad()
+{
+  glDeleteVertexArrays(1, &vertex_array_);
+
+  glDeleteBuffers(1, &buffer_);
 }
 
 void
 screen_quad::draw(GLint position_attrib)
 {
-  glBindBuffer(GL_ARRAY_BUFFER, id_);
-
-  glEnableVertexAttribArray(position_attrib);
-
-  glVertexAttribPointer(position_attrib, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, reinterpret_cast<const void*>(0));
+  glBindVertexArray(vertex_array_);
 
   glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-} // namespace uikit
+} // namespace glow

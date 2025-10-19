@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.14.7)
 
 find_package(Python COMPONENTS Interpreter Development)
 
-if(UIKIT_BUILD_PYBIND11)
+if(GLOW_BUILD_PYBIND11)
   include(../cmake/pybind11.cmake)
 else()
   find_package(pybind11 CONFIG)
 endif()
 
-pybind11_add_module(uikitpy
+pybind11_add_module(glowpy
   python.cpp
   gl.hpp
   gl.cpp
@@ -21,14 +21,14 @@ pybind11_add_module(uikitpy
   pfd.hpp
   pfd.cpp)
 
-target_link_libraries(uikitpy PUBLIC uikit::uikit)
+target_link_libraries(glowpy PUBLIC glow::glow)
 
-target_compile_features(uikitpy PRIVATE cxx_std_17)
+target_compile_features(glowpy PRIVATE cxx_std_17)
 
-target_compile_definitions(uikitpy PRIVATE PYBIND11_DETAILED_ERROR_MESSAGES=1)
+target_compile_definitions(glowpy PRIVATE PYBIND11_DETAILED_ERROR_MESSAGES=1)
 
-if(UIKIT_INSTALL)
-  install(TARGETS uikitpy
+if(GLOW_INSTALL)
+  install(TARGETS glowpy
     ARCHIVE DESTINATION .
     LIBRARY DESTINATION .
     RUNTIME DESTINATION .)

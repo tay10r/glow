@@ -1,10 +1,10 @@
-#include <uikit/shader_compiler.hpp>
+#include <glow/shader_compiler.hpp>
 
 #include <sstream>
 
 #include <cstring>
 
-namespace uikit {
+namespace glow {
 
 shader_compile_error::shader_compile_error(const std::string& what, const std::string& source)
   : shader_error(what)
@@ -133,4 +133,4 @@ compile_shader(const char* vert_source_in,
   throw shader_link_error(log);
 }
 
-} // namespace uikit
+} // namespace glow
