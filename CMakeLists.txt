@@ -13,7 +13,7 @@ option(GLOW_BUILD_PYBIND11 "Whether or not to download and build pybind11." OFF)
 option(GLOW_MAIN           "Whether or not to build the entry point code."  ON)
 
 set(GLFW_URL     "https://github.com/glfw/glfw/archive/refs/tags/3.4.zip"                 CACHE STRING "The release URL of GLFW.")
-set(IMGUI_URL    "https://github.com/ocornut/imgui/archive/refs/tags/v1.92.4-docking.zip" CACHE STRING "The release URL of ImGui.")
+set(IMGUI_URL    "https://github.com/ocornut/imgui/archive/refs/tags/v1.91.2-docking.zip" CACHE STRING "The release URL of ImGui.")
 set(IMPLOT_URL   "https://github.com/epezent/implot/archive/refs/tags/v0.16.zip"          CACHE STRING "The release URL of ImPlot.")
 set(PYBIND11_URL "https://github.com/pybind/pybind11/archive/refs/tags/v3.0.1.zip"        CACHE STRING "The release URL of pybind11.")
 
