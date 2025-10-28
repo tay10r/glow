@@ -178,6 +178,8 @@ public:
     return sago::getDataHome() + "/" + m_app_name;
   }
 
+  auto get_documents_path() const -> std::string override { return sago::getDocumentsFolder(); }
+
   void make_data_directory()
   {
 #if defined(__linux__) || defined(__EMSCRIPTEN__)

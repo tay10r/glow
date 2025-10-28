@@ -34,6 +34,9 @@ public:
   /// directory.
   virtual auto get_app_data_path() const -> std::string = 0;
 
+  /// @brief Gets the path to the user's documents directory.
+  virtual auto get_documents_path() const -> std::string = 0;
+
   /// @brief Gets the current scale factor.
   virtual auto get_scale() const -> float = 0;
 

@@ -60,6 +60,8 @@ public:
     return ".";
   }
 
+  auto get_documents_path() const -> std::string override { return "."; }
+
   float get_scale() const override { return m_scale; }
 
   void set_scale(float scale) override
